@@ -1,0 +1,26 @@
+[
+    {
+        "task": "Hello me",
+        "done": false,
+        "priority": 1,
+        "deadline": "2026-04-03"
+    },
+    {
+        "task": "Yes",
+        "done": false,
+        "priority": 1,
+        "deadline": ""
+    },
+    {
+        "task": "Morning Meeting",
+        "done": true,
+        "priority": 1,
+        "deadline": "2026-04-03"
+    },
+    {
+        "task": "Yellow Flower Meeting",
+        "done": true,
+        "priority": 1,
+        "deadline": "2026-04-23"
+    }
+]
