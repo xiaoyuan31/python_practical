@@ -1,2 +1,2 @@
 # python_practical
-Practice pythong
+Practice python 
