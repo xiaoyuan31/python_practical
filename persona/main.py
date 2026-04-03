@@ -7,7 +7,7 @@ from tkmacosx import Button
 import openai
 
 # ---------- Set your OpenAI API key ----------
-openai.api_key = "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"  # <-- Replace with your API key
+openai.api_key = ""  # <-- Replace with your API key
 
 
 # ---------- File to store personas ----------
