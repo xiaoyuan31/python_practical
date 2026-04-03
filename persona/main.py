@@ -4,12 +4,15 @@ from tkinter import ttk
 import json
 import os
 import random
+from PIL import Image, ImageTk
+import requests
+from io import BytesIO
 from PIL import Image, ImageTk  # pip install pillow
 import openai
 from tkmacosx import Button 
 
 # ---------- Set your OpenAI API key ----------
-openai.api_key = ""   # <-- Replace with your API key
+openai.api_key ="YOUR_OPENAI_API_KEY" 
 
 # ---------- File to store personas ----------
 DATA_FILE = "personas.json"
@@ -28,6 +31,54 @@ role_colors = {
     "Support": "#64B5F6",
     "Other": "#FFD54F"
 }
+
+avatar_folder = "avatars"
+os.makedirs(avatar_folder, exist_ok=True)
+
+def generate_avatar(name, role):
+    """
+    Generate a unique avatar via OpenAI's Images API.
+    Returns the local filename path.
+    """
+    filename = os.path.join(avatar_folder, f"{name}.png")
+    
+    # if avatar already exists, reuse it
+    if os.path.exists(filename):
+        return filename
+
+    prompt = f"A vibrant cartoon avatar of a {role} named {name}, front facing, colorful background"
+
+    try:
+        # using the new Images API
+        result = openai.images.generate(
+            model="gpt-image-1",
+            prompt=prompt,
+            size="256x256"
+        )
+        
+        # get the Base64 image data
+        image_b64 = result.data[0].b64_json
+        image_bytes = BytesIO(base64.b64decode(image_b64))
+        
+        img = Image.open(image_bytes)
+        img.save(filename)  # store locally
+        return filename
+
+    except Exception as e:
+        print("Avatar generation failed:", e)
+        # fallback: gray block
+        fallback = Image.new("RGB", (256, 256), "#CCCCCC")
+        fallback.save(filename)
+        return filename
+
+
+def load_avatar_tk(name, role):
+    """
+    Convert the generated avatar to a Tkinter PhotoImage.
+    """
+    path = generate_avatar(name, role)
+    img = Image.open(path).resize((50, 50))
+    return ImageTk.PhotoImage(img)
 
 # ---------- AI Trait Generator ----------
 def generate_traits(name, role):
@@ -56,13 +107,7 @@ root.title("AI Persona List with Avatars")
 root.geometry("600x450")
 
 # ---------- Avatar Images ----------
-avatar_colors = ["#FFCDD2", "#C8E6C9", "#BBDEFB", "#FFF9C4", "#D1C4E9"]
 
-def generate_avatar(color=None):
-    # Create a simple color avatar
-    color = color or random.choice(avatar_colors)
-    img = Image.new("RGB", (50, 50), color)
-    return ImageTk.PhotoImage(img)
 
 # Keep reference to images to prevent garbage collection
 avatar_images = []
@@ -86,8 +131,11 @@ def refresh_tree():
             text=p["name"],
             tags=(p["role"],)
         )
+        avatar = load_avatar_tk(p['name'], p['role'])
+       
+        tk.Label(root, image=avatar).pack()
         tree.tag_configure(p["role"], background=role_color, foreground="black")
-
+        
 def add_persona():
     name = simpledialog.askstring("Name", "Enter persona name:")
     if not name:
@@ -135,6 +183,10 @@ def delete_persona():
 def save_personas():
     with open(DATA_FILE, "w") as f:
         json.dump(personas, f, indent=4)
+
+
+avatar_folder = "avatars"
+os.makedirs(avatar_folder, exist_ok=True)
 
 # ---------- Buttons ----------
 btn_frame = tk.Frame(root)
