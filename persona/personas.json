@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Player",
+        "role": "Friend",
+        "traits": "Mysterious, Kind, Energetic",
+        "description": "Friend are you player?"
+    },
+    {
+        "name": "Hater",
+        "role": "Work",
+        "traits": "Clever, Loyal, Mysterious",
+        "description": "Why do you hate me?"
+    },
+    {
+        "name": "Lover",
+        "role": "Fake Love",
+        "traits": "Brave, Clever, Kind",
+        "description": "Faking Love Faking Love"
+    }
+]
